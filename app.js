@@ -23,16 +23,6 @@ const articleSchema = new mongoose.Schema({
 
 const Article = mongoose.model("Article", articleSchema);
 
-const article = new Article({
-    title: "title",
-    content: "content"
-});
-
-// article.save()
-// .then(()=>{
-//     console.log("Article is successfully added");
-// });
-
 app.get("/articles", function(req, res){
     Article.find({})
     .then((articles)=>{
@@ -42,6 +32,21 @@ app.get("/articles", function(req, res){
         res.send("Not found");
     });
 });
+
+app.post("/articles",function(req, res){
+    const title = req.body.title;
+    const content = req.body.content;
+    
+    const article = new Article({
+        title: req.body.title,
+        content: req.body.content
+    });
+
+    article.save()
+    .then(()=>{
+        console.log("Article is successfully added");
+    });
+})
 
 
 app.listen(3000, function(req, res){
