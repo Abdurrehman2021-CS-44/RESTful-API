@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.set('view engine', 'ejs');
 
-app.use(express.static("Public"));
+app.use(express.static("public"));
 
 mongoose.connect("mongodb://127.0.0.1:27017/wikiDB")
 .then(()=>{
@@ -21,7 +21,7 @@ const articleSchema = new mongoose.Schema({
     content: String
 });
 
-const Article = mongoose.model("articles", articleSchema);
+const Article = mongoose.model("Article", articleSchema);
 
 const article = new Article({
     title: "title",
@@ -32,6 +32,16 @@ const article = new Article({
 // .then(()=>{
 //     console.log("Article is successfully added");
 // });
+
+app.get("/articles", function(req, res){
+    Article.find({})
+    .then((articles)=>{
+        res.send(articles);
+    })
+    .catch((err)=>{
+        res.send("Not found");
+    });
+});
 
 
 app.listen(3000, function(req, res){
