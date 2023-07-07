@@ -29,7 +29,7 @@ app.get("/articles", function(req, res){
         res.send(articles);
     })
     .catch((err)=>{
-        res.send("Not found");
+        res.send(err);
     });
 });
 
@@ -38,16 +38,28 @@ app.post("/articles",function(req, res){
     const content = req.body.content;
     
     const article = new Article({
-        title: req.body.title,
-        content: req.body.content
+        title: title,
+        content: content
     });
 
     article.save()
     .then(()=>{
-        console.log("Article is successfully added");
+        console.log("Article is successfully added.");
+    })
+    .catch((err)=>{
+        res.send(err);
     });
-})
+});
 
+app.delete("/articles", function(req, res){
+    Article.deleteMany({})
+    .then(()=>{
+        res.send("Successfully Deleted All");
+    })
+    .catch((err)=>{
+        res.send(err);
+    });
+});
 
 app.listen(3000, function(req, res){
     console.log("Server is running on port 3000.");
