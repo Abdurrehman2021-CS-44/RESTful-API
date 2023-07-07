@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose")
 const ejs = require("ejs")
 const bodyParser = require("body-parser");
+const _ = require("lodash");
 
 const app = new express();
 
@@ -22,6 +23,8 @@ const articleSchema = new mongoose.Schema({
 });
 
 const Article = mongoose.model("Article", articleSchema);
+
+///////////////////////////////////REQUEST TARGETING ALL ARTICLES///////////////////
 
 app.route("/articles")
 .get((req, res) => {
@@ -56,6 +59,33 @@ app.route("/articles")
         res.send("Successfully Deleted All");
     })
     .catch((err)=>{
+        res.send(err);
+    });
+});
+
+///////////////////////////////////REQUEST TARGETING A SPECIFIC ARTICLES////////////////
+
+app.route("/articles/:articleTitle")
+.get((req, res) => {
+    console.log();
+    Article.findOne({title: req.params.articleTitle})
+    .then((article) => {
+        res.send(article)
+    })
+    .catch((err) => {
+        res.send(err);
+    })
+})
+.put((req, res) => {
+    Article.updateOne(
+        {title: req.params.articleTitle},
+        {title: req.body.title, content: req.body.content},
+        {overwrite: true}
+    )
+    .then(() => {
+        res.send("Successfully Updated");
+    })
+    .catch((err) => {
         res.send(err);
     });
 });
