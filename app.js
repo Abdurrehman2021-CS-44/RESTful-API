@@ -56,7 +56,7 @@ app.route("/articles")
 .delete((req, res) => {
     Article.deleteMany({})
     .then(()=>{
-        res.send("Successfully Deleted All");
+        res.send("Successfully Deleted All.");
     })
     .catch((err)=>{
         res.send(err);
@@ -77,17 +77,34 @@ app.route("/articles/:articleTitle")
     })
 })
 .put((req, res) => {
-    Article.updateOne(
+    Article.replaceOne(
         {title: req.params.articleTitle},
-        {title: req.body.title, content: req.body.content},
-        {overwrite: true}
+        {title: req.body.title, content: req.body.content}
     )
     .then(() => {
-        res.send("Successfully Updated");
+        res.send("Successfully replaced the " + req.params.articleTitle + " article");
     })
     .catch((err) => {
         res.send(err);
     });
+})
+.patch((req, res) => {
+    Article.updateOne(
+        {title: req.params.articleTitle},
+        {$set: req.body},
+    )
+    .then(() => {
+        res.send("Successfully updated the " + req.params.articleTitle + " article");
+    })
+    .catch((err) => {
+        res.send(err);
+    });
+})
+.delete((req, res) => {
+    Article.deleteOne({title: req.params.articleTitle})
+    .then(() => {
+        res.send("Successfully deleted the " + req.params.articleTitle + " article")
+    })
 });
 
 app.listen(3000, function(req, res){
